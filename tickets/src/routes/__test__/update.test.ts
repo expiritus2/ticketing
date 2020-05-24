@@ -1,0 +1,53 @@
+import request from 'supertest';
+import { app } from "../../app";
+import mongoose from 'mongoose';
+
+it('returns a 404 if the provided id does not exist', async () => {
+    const id = new mongoose.Types.ObjectId().toHexString();
+    await request(app)
+        .put(`/api/tickets/${id}`)
+        .set('Cookie', global.signin())
+        .send({
+            title: 'sdkfjsdf',
+            price: 20
+        })
+        .expect(404)
+});
+
+it('returns a 401 it the user is no authenticated', async () => {
+    const id = new mongoose.Types.ObjectId().toHexString();
+    await request(app)
+        .put(`/api/tickets/${id}`)
+        .send({
+            title: 'sdkfjsdf',
+            price: 20
+        })
+        .expect(401)
+});
+
+it('returns a 401 if the user does not own the ticket', async () => {
+    const response = await request(app)
+        .post('/api/tickets')
+        .set('Cookie', global.signin())
+        .send({
+            title: 'skdjf',
+            price: 20
+        });
+
+    await request(app)
+        .put(`/api/tickets/${response.body.id}`)
+        .set('Cookie', global.signin())
+        .send({
+            title: 'sdkfjsldf',
+            price: 1000
+        })
+        .expect(401);
+});
+
+it('returns a 400 if the user provide an invalid title or prict', async () => {
+
+});
+
+it('updates the ticket provided valid inputs', async () => {
+
+});
