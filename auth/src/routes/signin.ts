@@ -36,6 +36,7 @@ router.post('/api/users/signin', [
             throw new BadRequestError('Invalid Credentials')
         }
 
+        console.log('this', process.env.JWT_KEY);
         const userJwt = jwt.sign({
                 id: existingUser.id,
                 email: existingUser.email,
@@ -43,6 +44,7 @@ router.post('/api/users/signin', [
             process.env.JWT_KEY!
         );
 
+        // @ts-ignore
         req.session = {
             jwt: userJwt,
         };

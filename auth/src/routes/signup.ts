@@ -37,6 +37,7 @@ router.post('/api/users/signup', [
         process.env.JWT_KEY!
     );
 
+    // @ts-ignore
     req.session = {
         jwt: userJwt,
     };
